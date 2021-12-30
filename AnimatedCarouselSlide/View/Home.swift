@@ -12,10 +12,16 @@ struct Home: View {
     //MARK: Current Index
     @State var currentIndex: Int = 0
     
+    //Animation Properties
+    @State var bgOffset: CGFloat = 0
+    @State var textColor: Color = .white
+    
     var body: some View {
 
         VStack{
 
+            let isSmallDevice = getRect().height < 750
+            
             Text(foods[currentIndex].itemTitle)
                 .font(.largeTitle.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -74,11 +80,39 @@ struct Home: View {
                     Image(foods[currentIndex].itemImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                    //MARK: Circle Semi Border
+                        .background(
+                            
+                            Circle()
+                                .trim(from: 0.5, to: 1)
+                                .stroke(
+                                    
+                                    LinearGradient(colors: [textColor,textColor.opacity(0.1),textColor.opacity(0.1)], startPoint: .top, endPoint: .bottom)
+                                    ,lineWidth: 0.7
+                                )
+                                .padding(-15)
+                                .rotationEffect(.init(degrees: -90))
+                        )
+                        .frame(width: size.width, height: size.width * (isSmallDevice ? 1.5 : 1.8))
+                        .frame(maxHeight: .infinity, alignment: .center)
+                        .offset(x: 70)
                 }
+//                .frame(height: (getRect().width / 2) * (isSmallDevice ? 1.6 : 2))
+                .frame(height: (getRect().width))
+
             }
+            
+            //MARK: Food Description
+            Text("Buffalo Chicken Bites have the most tender, juicy meat, coated in Frank’s hot sauce and fried to perfection before dipping either in blue cheese or ranch. Adults and kids agree that this is a family favorite appetizer!")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .lineSpacing(8)
+                .padding(.vertical)
         }
         .padding()
-        .foregroundColor(.white)
+        .foregroundColor(textColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("BG"))
     }
@@ -87,6 +121,10 @@ struct Home: View {
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
         Home()
+            //.previewDevice("iPhone 8")
+            //.previewDevice("iPhone 12 Pro Max")
+            //.previewDevice("iPhone 13 Pro Max")
+
     }
 }
 
