@@ -184,13 +184,14 @@ struct Home: View {
             animateImage = true
         }
         
-        //Updating Index
-        currentIndex += moveUp ? 1 : -1
-        
         //Changing Text Color After Some time
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             
             animateText = false
+            
+            //Updating Index
+            currentIndex += moveUp ? 1 : -1
+            print(currentIndex)
             
             withAnimation(.easeInOut){
                 //Automatic Change
