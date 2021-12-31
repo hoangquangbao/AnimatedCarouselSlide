@@ -24,7 +24,6 @@ struct Home: View {
         VStack{
 
             let isSmallDevice = getRect().height < 750
-            
             Text(foods[currentIndex].itemTitle)
                 .font(.largeTitle.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
