@@ -94,9 +94,9 @@ struct Home: View {
                                 .padding(-15)
                                 .rotationEffect(.init(degrees: -90))
                         )
-                        .frame(width: size.width, height: size.width * (isSmallDevice ? 1.5 : 1.8))
-                        .frame(maxHeight: .infinity, alignment: .center)
-                        .offset(x: 70)
+//                        .frame(width: size.width, height: size.width * (isSmallDevice ? 1.5 : 1.8))
+//                        .frame(maxHeight: .infinity, alignment: .center)
+//                        .offset(x: 70)
                 }
 //                .frame(height: (getRect().width / 2) * (isSmallDevice ? 1.6 : 2))
                 .frame(height: (getRect().width))
@@ -114,7 +114,75 @@ struct Home: View {
         .padding()
         .foregroundColor(textColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color("BG"))
+        .background(
+            
+            GeometryReader{ proxy in
+
+                let height = proxy.size.height
+
+                LazyVStack(spacing: 0){
+
+                    ForEach(foods.indices, id: \.self){ index in
+
+                        if index % 2 == 0{
+                            Color("BG")
+                                .frame(height: height)
+                        } else {
+                            Color.white
+                                .frame(height: height)
+                        }
+                    }
+                }
+                .offset(y: bgOffset)
+            }
+                .ignoresSafeArea()
+        )
+        .gesture(
+            
+            DragGesture()
+                .onEnded({ value in
+                    
+                    let translation = value.translation.height
+                    
+                    if translation < 0 && -translation > 50 && (currentIndex < (foods.count - 1)){
+                        //MARK: Swiped Up
+                        withAnimation(.easeInOut(duration: 0.6)){
+                            bgOffset += -getRect().height
+                        }
+                        
+                        //Changing Text Color After Some time
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            
+                            //Updating Index
+                            currentIndex += 1
+                            
+                            withAnimation(.easeInOut){
+                                //Automatic Change
+                                textColor = (textColor == .black ? .white : .black)
+                            }
+                        }
+                    }
+                    
+                    if translation > 0 && translation > 50 && currentIndex > 0{
+                        //MARK: Swiped Down
+                        withAnimation(.easeInOut(duration: 0.6)){
+                            bgOffset += getRect().height
+                        }
+                        
+                        //Changing Text Color After Some time
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            
+                            //Updating Index
+                            currentIndex -= 1
+                            
+                            withAnimation(.easeInOut){
+                                //Automatic Change
+                                textColor = (textColor == .black ? .white : .black)
+                            }
+                        }
+                    }
+                })
+        )
     }
 }
 

@@ -20,5 +20,5 @@ var foods = [
     Food(itemImage: "CakePop", itemTitle: "Cake Pop"),
     Food(itemImage: "CaramelCinnamon", itemTitle: "Caramel Cinnamon"),
     Food(itemImage: "LemonPoppyseed", itemTitle: "Lemon Poppyseed")
-
+    
 ]
