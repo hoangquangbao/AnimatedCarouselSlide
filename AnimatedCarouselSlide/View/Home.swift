@@ -87,6 +87,8 @@ struct Home: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipShape(Circle())
+                    //Rotation image
+                        .rotationEffect(.init(degrees: animateImage ? 360 : 0))
                     //MARK: Circle Semi Border
                         .background(
                             
@@ -151,53 +153,56 @@ struct Home: View {
             DragGesture()
                 .onEnded({ value in
                     
+//                    if animateImage{return}
+                    
                     let translation = value.translation.height
                     
                     if translation < 0 && -translation > 50 && (currentIndex < (foods.count - 1)){
                         //MARK: Swiped Up
-                        animateText = true
-                        
-                        withAnimation(.easeInOut(duration: 0.6)){
-                            bgOffset += -getRect().height
-                        }
-                        
-                        //Changing Text Color After Some time
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            
-                            animateText = false
-                            //Updating Index
-                            currentIndex += 1
-                            
-                            withAnimation(.easeInOut){
-                                //Automatic Change
-                                textColor = (textColor == .black ? .white : .black)
-                            }
-                        }
+                        AnimateSlide(moveUp: true)
+
                     }
                     
                     if translation > 0 && translation > 50 && currentIndex > 0{
                         //MARK: Swiped Down
-                        animateText = true
-
-                        withAnimation(.easeInOut(duration: 0.6)){
-                            bgOffset += getRect().height
-                        }
-                        
-                        //Changing Text Color After Some time
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            
-                            animateText = false
-                            //Updating Index
-                            currentIndex -= 1
-                            
-                            withAnimation(.easeInOut){
-                                //Automatic Change
-                                textColor = (textColor == .black ? .white : .black)
-                            }
-                        }
+                        AnimateSlide(moveUp: false)
                     }
                 })
         )
+    }
+    
+    func AnimateSlide(moveUp: Bool = true) {
+        
+        animateText = true
+        
+        withAnimation(.easeInOut(duration: 0.6)){
+            bgOffset += (moveUp ? -getRect().height : getRect().height)
+        }
+        
+        //Rotation image
+        withAnimation(.interactiveSpring(response: 1.5, dampingFraction: 0.8, blendDuration: 0.8)){
+            animateImage = true
+        }
+        
+        //Updating Index
+        currentIndex += moveUp ? 1 : -1
+        
+        //Changing Text Color After Some time
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            
+            animateText = false
+            
+            withAnimation(.easeInOut){
+                //Automatic Change
+                textColor = (textColor == .black ? .white : .black)
+            }
+        }
+        
+        //Rotation image: Setting Back to Original State after animation Finished
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
+            
+            animateImage = false
+        }
     }
 }
 
