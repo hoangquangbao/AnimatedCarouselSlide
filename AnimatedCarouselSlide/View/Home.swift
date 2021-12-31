@@ -15,6 +15,9 @@ struct Home: View {
     //Animation Properties
     @State var bgOffset: CGFloat = 0
     @State var textColor: Color = .white
+    //Text & Image Animation
+    @State var animateText: Bool = false
+    @State var animateImage: Bool = false
     
     var body: some View {
 
@@ -26,6 +29,9 @@ struct Home: View {
                 .font(.largeTitle.bold())
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(height: 100, alignment: .top)
+                .offset(y: animateText ? 200 : 0)
+                .clipped()
+                .animation(.easeInOut, value: animateText)
                 .padding(.top)
 
             //MARK: Food Details With Image
@@ -107,8 +113,11 @@ struct Home: View {
             Text("Buffalo Chicken Bites have the most tender, juicy meat, coated in Frank’s hot sauce and fried to perfection before dipping either in blue cheese or ranch. Adults and kids agree that this is a family favorite appetizer!")
                 .font(.callout)
                 .foregroundStyle(.secondary)
-                .lineLimit(3)
                 .lineSpacing(8)
+                .lineLimit(3)
+                .offset(y: animateText ? 200 : 0)
+                .clipped()
+                .animation(.easeInOut, value: animateText)
                 .padding(.vertical)
         }
         .padding()
@@ -146,6 +155,8 @@ struct Home: View {
                     
                     if translation < 0 && -translation > 50 && (currentIndex < (foods.count - 1)){
                         //MARK: Swiped Up
+                        animateText = true
+                        
                         withAnimation(.easeInOut(duration: 0.6)){
                             bgOffset += -getRect().height
                         }
@@ -153,6 +164,7 @@ struct Home: View {
                         //Changing Text Color After Some time
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             
+                            animateText = false
                             //Updating Index
                             currentIndex += 1
                             
@@ -165,6 +177,8 @@ struct Home: View {
                     
                     if translation > 0 && translation > 50 && currentIndex > 0{
                         //MARK: Swiped Down
+                        animateText = true
+
                         withAnimation(.easeInOut(duration: 0.6)){
                             bgOffset += getRect().height
                         }
@@ -172,6 +186,7 @@ struct Home: View {
                         //Changing Text Color After Some time
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             
+                            animateText = false
                             //Updating Index
                             currentIndex -= 1
                             
